@@ -1,15 +1,19 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import Filter from "./components/Filter";
 import AddNewPerson from "./components/AddNewPerson";
 import Persons from "./components/Persons";
+import axios from "axios";
 
 const App = () => {
-    const [persons, setPersons] = useState([
-        {name: 'Arto Hellas', number: '123456789'}
-    ])
+    const [persons, setPersons] = useState([])
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [filter, setFilter] = useState('');
+
+    useEffect(() => {
+        axios.get('http://localhost:3001/persons')
+            .then(x => setPersons(x.data))
+    }, []);
 
     // I'm supposed to keep this event handler here according to the instructions
     // but I don't really see why? I'd like to have it in the AddNewPerson component

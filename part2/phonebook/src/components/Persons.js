@@ -10,7 +10,7 @@ const Persons = ({persons, filter}) => {
     return (
         <div>
             {persons.filter(x => new RegExp(filter, "i").test(x.name))
-                .map(x => <Person key={x.name} name={x.name} number={x.number}/>)}
+                .map(x => <Person key={x.id} name={x.name} number={x.number}/>)}
         </div>
     );
 }
