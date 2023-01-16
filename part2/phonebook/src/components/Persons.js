@@ -8,11 +8,14 @@ const Person = ({person, onDelete}) => {
     );
 }
 
-const Persons = ({persons, filter, setPersons}) => {
+const Persons = ({persons, filter, setPersons, setNotification}) => {
     const onDelete = (person) => {
         if (window.confirm(`Delete ${person.name}?`)) {
-            PersonService.remove(person.id);
             setPersons(persons.filter(x => x.id !== person.id));
+            PersonService.remove(person.id).then(() => {
+                setNotification({message: `Information of ${person.name} has already been removed from server`, color: "red"});
+                setTimeout(() => setNotification(null), 5000);
+            })
         }
     }
 

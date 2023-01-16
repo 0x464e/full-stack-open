@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react'
 import Filter from "./components/Filter";
 import AddNewPerson from "./components/AddNewPerson";
 import Persons from "./components/Persons";
+import Notification from "./components/Notification";
 import axios from "axios";
 import personService from "./components/PersonService";
 
@@ -10,6 +11,7 @@ const App = () => {
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [filter, setFilter] = useState('');
+    const [notification, setNotification] = useState(null);
 
     useEffect(() => {
         axios.get('http://localhost:3001/persons')
@@ -29,13 +31,21 @@ const App = () => {
             if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
                 const person = persons.find(person => person.name === newName);
                 personService.update(person.id, {name: newName, number: newNumber})
-                    .then(x => setPersons(persons.map(y => y.id === x.id ? x : y)));
-            } else
-                return;
+                    .then(x => {
+                        setPersons(persons.map(y => y.id === x.id ? x : y))
+                        setNotification({message: `Updated ${x.name}'s phone number`, color: "green"});
+                        setTimeout(() => setNotification(null), 5000);
+                    });
+            }
+            return;
         }
 
         const newPerson = {name: newName, number: newNumber};
-        personService.add(newPerson).then(x => setPersons(persons.concat(x)));
+        personService.add(newPerson).then(x => {
+            setPersons(persons.concat(x));
+            setNotification({message: `Added ${newPerson.name}`, color: "green"});
+            setTimeout(() => setNotification(null), 5000);
+        });
 
         setNewName('');
         setNewNumber('');
@@ -44,6 +54,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+            <Notification notification={notification}/>
             <Filter setFilter={setFilter}/>
 
             <h2>Add a new</h2>
@@ -55,7 +66,7 @@ const App = () => {
             />
 
             <h2>Numbers</h2>
-            <Persons persons={persons} filter={filter} setPersons={setPersons}/>
+            <Persons persons={persons} filter={filter} setPersons={setPersons} setNotification={setNotification}/>
         </div>
     );
 }
