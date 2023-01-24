@@ -1,20 +1,20 @@
-GET http://localhost:3001/api/persons
+GET https://misty-tree-6657.fly.dev/api/persons
 
 ###
 
-GET http://localhost:3001/api/persons/1
+GET https://misty-tree-6657.fly.dev/api/persons/1
 
 ###
 
-GET http://localhost:3001/api/persons/1234
+GET https://misty-tree-6657.fly.dev/api/persons/1234
 
 ###
 
-DELETE http://localhost:3001/api/persons/1
+DELETE https://misty-tree-6657.fly.dev/api/persons/1
 
 ###
 
-POST http://localhost:3001/api/persons
+POST https://misty-tree-6657.fly.dev/api/persons
 content-type: application/json
 
 {

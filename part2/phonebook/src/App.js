@@ -14,7 +14,7 @@ const App = () => {
     const [notification, setNotification] = useState(null);
 
     useEffect(() => {
-        axios.get('http://localhost:3001/persons')
+        axios.get("/api/persons")
             .then(x => setPersons(x.data))
     }, []);
 
