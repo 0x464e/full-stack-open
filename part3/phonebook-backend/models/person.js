@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
 mongoose.set("strictQuery", false);
-mongoose.connect(process.env.MONGODB_URI)
+// eslint-disable-next-line no-undef
+mongoose.connect(process.env.MONGODB_URI);
 
 const personSchema = new mongoose.Schema({
     name: {

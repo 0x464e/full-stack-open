@@ -42,7 +42,7 @@ app.post("/api/persons", (request, response, next) => {
     const person = request.body;
 
     if (!person.name || !person.number)
-        return response.status(400).json({error: "missing name or number"});
+        return response.status(400).json({ error: "missing name or number" });
 
     const newPerson = new Person({
         name: person.name,
@@ -56,9 +56,9 @@ app.put("/api/persons/:id", (request, response, next) => {
     const newPerson = {
         name: request.body.name,
         number: request.body.number
-    }
+    };
 
-    Person.findByIdAndUpdate(request.params.id, newPerson, {new: true})
+    Person.findByIdAndUpdate(request.params.id, newPerson, { new: true })
         .then(updatedPerson => response.json(updatedPerson))
         .catch(error => next(error));
 });
@@ -67,15 +67,16 @@ const errorHandler = (error, request, response, next) => {
     console.error(error);
 
     if (error.name === "CastError")
-        return response.status(400).send({error: "malformatted id"});
+        return response.status(400).send({ error: "malformatted id" });
 
     if (error.name === "ValidationError")
-        return response.status(400).json({error: error.message});
+        return response.status(400).json({ error: error.message });
 
     next(error);
-}
+};
 
 app.use(errorHandler);
 
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,7 +1,6 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
 
-const password = process.argv[2];
 const name = process.argv[3];
 const number = process.argv[4];
 
@@ -12,9 +11,9 @@ mongoose.connect(process.env.MONGODB_URI);
 const noteSchema = new mongoose.Schema({
     name: String,
     number: String
-})
+});
 
-const Note = mongoose.model("Person", noteSchema)
+const Note = mongoose.model("Person", noteSchema);
 
 if (!name)
 {
