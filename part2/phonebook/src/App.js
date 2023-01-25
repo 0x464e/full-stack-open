@@ -35,17 +35,26 @@ const App = () => {
                         setPersons(persons.map(y => y.id === x.id ? x : y))
                         setNotification({message: `Updated ${x.name}'s phone number`, color: "green"});
                         setTimeout(() => setNotification(null), 5000);
-                    });
+                    })
+                    .catch(error => {
+                        setNotification({message: error.response.data.error, color: "red"});
+                        setTimeout(() => setNotification(null), 5000);
+                    })
             }
             return;
         }
 
         const newPerson = {name: newName, number: newNumber};
-        personService.add(newPerson).then(x => {
-            setPersons(persons.concat(x));
-            setNotification({message: `Added ${newPerson.name}`, color: "green"});
-            setTimeout(() => setNotification(null), 5000);
-        });
+        personService.add(newPerson)
+            .then(x => {
+                setPersons(persons.concat(x));
+                setNotification({message: `Added ${newPerson.name}`, color: "green"});
+                setTimeout(() => setNotification(null), 5000);
+            })
+            .catch(error => {
+                setNotification({message: error.response.data.error, color: "red"});
+                setTimeout(() => setNotification(null), 5000);
+            });
 
         setNewName('');
         setNewNumber('');

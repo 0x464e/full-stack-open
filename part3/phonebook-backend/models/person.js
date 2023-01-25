@@ -4,8 +4,15 @@ mongoose.set("strictQuery", false);
 mongoose.connect(process.env.MONGODB_URI)
 
 const personSchema = new mongoose.Schema({
-    name: String,
-    number: String
+    name: {
+        type: String,
+        minlength: 3
+    },
+    number: {
+        type: String,
+        minlength: 8,
+        validate: (inp) => /(^\d{2,3}-\d+$)|(^\d+$)/.test(inp)
+    }
 });
 
 personSchema.set("toJSON", {

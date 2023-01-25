@@ -13,7 +13,7 @@ const Persons = ({persons, filter, setPersons, setNotification}) => {
         if (window.confirm(`Delete ${person.name}?`)) {
             setPersons(persons.filter(x => x.id !== person.id));
             PersonService.remove(person.id).then(() => {
-                setNotification({message: `Information of ${person.name} has already been removed from server`, color: "red"});
+                setNotification({message: `Information of ${person.name} has been removed from server`, color: "green"});
                 setTimeout(() => setNotification(null), 5000);
             })
         }
