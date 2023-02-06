@@ -1,9 +1,14 @@
 const mongoose = require("mongoose");
-const supertest = require("supertest");
+const { agent } = require("supertest");
 const app = require("../app");
 const Blog = require("../models/blog");
 
-const api = supertest(app);
+const api = agent(app);
+api.post("/api/login").send({
+    "username": "username",
+    "password": "password"
+}).then(response => api.auth(response.body.token, { type: "bearer" }));
+
 const blogs = [
     {
         _id: "5a422a851b54a676234d17f7",
@@ -57,10 +62,8 @@ const blogs = [
 
 beforeEach(async () => {
     await Blog.deleteMany({});
-    for (let blog of blogs) {
-        let blogObject = new Blog(blog);
-        await blogObject.save();
-    }
+    for (let blog of blogs)
+        await api.post("/api/blogs").send(blog);
 });
 
 test("correct number of blogs returned as json", async () => {
@@ -185,6 +188,18 @@ describe("updating a blog", () => {
             expect(response.body.url).toBe("new url");
         });
     });
+});
+
+test("blog can't be added without token", async () => {
+    const newBlog = {
+        title: "title",
+        author: "author",
+        url: "url",
+        likes: 0
+    };
+
+
+    await api.set("Authorization", "").post("/api/blogs").send(newBlog).expect(401);
 });
 
 afterAll(async () => await mongoose.connection.close());
