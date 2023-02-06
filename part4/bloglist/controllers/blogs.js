@@ -15,6 +15,9 @@ blogsRouter.post("/", async (request, response) => {
     if (request.body.likes === undefined)
         request.body.likes = 0;
 
+    if (!request.user)
+        return response.status(401).send({ error: "token missing or invalid" });
+
     const user = request.user;
     const blog = new Blog({ ...request.body, user: user._id });
 
@@ -26,6 +29,9 @@ blogsRouter.post("/", async (request, response) => {
 
 blogsRouter.delete("/:id", async (request, response, next) => {
     const id = request.params.id;
+    if (!request.user)
+        return response.status(401).send({ error: "token missing or invalid" });
+
     const user = request.user;
 
     try {
