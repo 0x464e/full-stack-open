@@ -1,23 +1,49 @@
-import React, {useState} from "react"
+import { useState, forwardRef } from 'react';
+import Toggleable from './Toggleable';
+import PropTypes from 'prop-types';
 
-const Blog = ({blog}) => (
-    <div>
-        {blog.title} {blog.author}
-    </div>
-)
+const Blog = ({ blog, updateBlog, removeBlog }) => {
+    const [visible, setVisible] = useState(false);
+
+    const blogStyle = {
+        paddingTop: 10,
+        paddingLeft: 2,
+        border: 'solid',
+        borderWidth: 1,
+        marginBottom: 5
+    };
+
+    const toggleVisibility = () => setVisible(!visible);
+    const handleLike = async () => await updateBlog(blog, { likes: blog.likes + 1, user: null }); //user validation for updating was never implemented in the backend
+    const handleRemove = async () => await removeBlog(blog);
+
+    return (
+        <div style={blogStyle}>
+            {blog.title} <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
+            {visible &&
+                <div>
+                    {blog.author}<br/>
+                    {blog.url}<br/>
+                    {blog.likes} likes <button onClick={handleLike}>like</button><br/>
+                    {blog.author}<br/>
+                    <button onClick={handleRemove}>remove</button>
+                </div>}
+        </div>
+    );
+};
 
 const CreateNewBlog = ({ handleCreateNewBlog }) => {
-    const [title, setTitle] = useState("");
-    const [author, setAuthor] = useState("");
-    const [url, setUrl] = useState("");
+    const [title, setTitle] = useState('');
+    const [author, setAuthor] = useState('');
+    const [url, setUrl] = useState('');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         await handleCreateNewBlog(title, author, url);
-        setTitle("");
-        setAuthor("");
-        setUrl("");
-    }
+        setTitle('');
+        setAuthor('');
+        setUrl('');
+    };
 
     return (
         <form onSubmit={handleSubmit}>
@@ -52,17 +78,30 @@ const CreateNewBlog = ({ handleCreateNewBlog }) => {
             <button type="submit">create</button>
         </form>
     );
-}
+};
 
-const BlogView = ({blogs, user, handleLogout, handleCreateNewBlog}) => {
+const BlogView = forwardRef(({ blogs, user, handleLogout, handleCreateNewBlog, updateBlog, removeBlog }, ref) => {
     return (
         <div>
             <h2>blogs</h2>
             <p>{user.name} logged in <button onClick={handleLogout()}>logout</button></p>
-            <CreateNewBlog handleCreateNewBlog={handleCreateNewBlog}/>
-            {blogs.map(blog => <Blog key={blog.id} blog={blog}/>)}
+            <Toggleable buttonLabel="new blog" ref={ref}>
+                <CreateNewBlog handleCreateNewBlog={handleCreateNewBlog}/>
+            </Toggleable>
+            {blogs.map(blog => <Blog key={blog.id} blog={blog} updateBlog={updateBlog} removeBlog={removeBlog}/>)}
         </div>
-    )
-}
+    );
+});
 
-export default BlogView
+BlogView.displayName = 'BlogView';
+
+BlogView.propTypes = {
+    blogs: PropTypes.array.isRequired,
+    user: PropTypes.object.isRequired,
+    handleLogout: PropTypes.func.isRequired,
+    handleCreateNewBlog: PropTypes.func.isRequired,
+    updateBlog: PropTypes.func.isRequired,
+    removeBlog: PropTypes.func.isRequired
+};
+
+export default BlogView;

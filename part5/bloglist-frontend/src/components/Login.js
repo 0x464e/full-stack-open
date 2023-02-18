@@ -1,15 +1,15 @@
-import React, {useState} from "react"
+import React, { useState } from 'react';
 
-const Login = ({handleLogin}) => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+const Login = ({ handleLogin }) => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         await handleLogin(username, password);
-        setUsername("");
-        setPassword("");
-    }
+        setUsername('');
+        setPassword('');
+    };
 
     return (
         <form onSubmit={handleSubmit}>
@@ -35,6 +35,6 @@ const Login = ({handleLogin}) => {
             <button type="submit">login</button>
         </form>
     );
-}
+};
 
 export default Login;
