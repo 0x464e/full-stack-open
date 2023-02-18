@@ -4,6 +4,7 @@ import blogService from './services/blogsService';
 import loginService from './services/loginService';
 import Login from './components/Login';
 import Notification from './components/Notification';
+import _ from 'lodash';
 
 const App = () => {
     const [blogs, setBlogs] = useState([]);
@@ -21,9 +22,13 @@ const App = () => {
         }
     }, []);
 
-    useEffect(() =>
-        setBlogs((blogs) => [...blogs].sort((a, b) => b.likes - a.likes)),
-    [blogs]);
+    useEffect(() => {
+        const sorted = blogs.sort((a, b) => b.likes - a.likes);
+        if (_.isEqual(sorted, blogs))
+            return;
+
+        setBlogs(sorted);
+    }, [blogs]);
 
     const handleLogin = async (username, password) => {
         try {

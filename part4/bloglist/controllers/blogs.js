@@ -21,9 +21,10 @@ blogsRouter.post("/", async (request, response) => {
     const user = request.user;
     const blog = new Blog({ ...request.body, user: user._id });
 
-    const savedBlog = await blog.save();
+    let savedBlog = await blog.save();
     user.blogs = user.blogs.concat(savedBlog._id);
     await user.save();
+    savedBlog = await savedBlog.populate("user", { username: 1, name: 1, id: 1 });
     response.status(201).json(savedBlog);
 });
 
@@ -52,7 +53,7 @@ blogsRouter.delete("/:id", async (request, response, next) => {
 
 blogsRouter.put("/:id", async (request, response, next) => {
     try {
-        const blog = await Blog.findByIdAndUpdate(request.params.id, request.body, { new: true });
+        const blog = await Blog.findByIdAndUpdate(request.params.id, request.body, { new: true }).populate("user", { username: 1, name: 1, id: 1 });
         response.status(blog ? 200 : 404).json(blog);
     } catch (error) {
         next(error);

@@ -14,18 +14,17 @@ const Blog = ({ blog, updateBlog, removeBlog }) => {
     };
 
     const toggleVisibility = () => setVisible(!visible);
-    const handleLike = async () => await updateBlog(blog, { likes: blog.likes + 1, user: null }); //user validation for updating was never implemented in the backend
+    const handleLike = async () => await updateBlog(blog, { likes: blog.likes + 1 });
     const handleRemove = async () => await removeBlog(blog);
 
     return (
         <div style={blogStyle}>
-            {blog.title} <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
+            {blog.title} {blog.author} <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
             {visible &&
                 <div>
-                    {blog.author}<br/>
                     {blog.url}<br/>
                     {blog.likes} likes <button onClick={handleLike}>like</button><br/>
-                    {blog.author}<br/>
+                    {blog.user.name}<br/>
                     <button onClick={handleRemove}>remove</button>
                 </div>}
         </div>

@@ -19,6 +19,7 @@ const createNew = async (newBlog) => {
 };
 
 const update = async (id, blog) => {
+    delete blog.user;
     const response = await axios.put(`${baseUrl}/${id}`, blog);
     return response.data;
 };
