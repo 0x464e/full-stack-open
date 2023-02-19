@@ -1,83 +1,8 @@
-import { useState, forwardRef } from 'react';
+import { forwardRef } from 'react';
+import Blog from './Blog';
+import CreateNewBlog from './CreateNewBlog';
 import Toggleable from './Toggleable';
 import PropTypes from 'prop-types';
-
-const Blog = ({ blog, updateBlog, removeBlog }) => {
-    const [visible, setVisible] = useState(false);
-
-    const blogStyle = {
-        paddingTop: 10,
-        paddingLeft: 2,
-        border: 'solid',
-        borderWidth: 1,
-        marginBottom: 5
-    };
-
-    const toggleVisibility = () => setVisible(!visible);
-    const handleLike = async () => await updateBlog(blog, { likes: blog.likes + 1 });
-    const handleRemove = async () => await removeBlog(blog);
-
-    return (
-        <div style={blogStyle}>
-            {blog.title} {blog.author} <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
-            {visible &&
-                <div>
-                    {blog.url}<br/>
-                    {blog.likes} likes <button onClick={handleLike}>like</button><br/>
-                    {blog.user.name}<br/>
-                    <button onClick={handleRemove}>remove</button>
-                </div>}
-        </div>
-    );
-};
-
-const CreateNewBlog = ({ handleCreateNewBlog }) => {
-    const [title, setTitle] = useState('');
-    const [author, setAuthor] = useState('');
-    const [url, setUrl] = useState('');
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        await handleCreateNewBlog(title, author, url);
-        setTitle('');
-        setAuthor('');
-        setUrl('');
-    };
-
-    return (
-        <form onSubmit={handleSubmit}>
-            <h2>create new</h2>
-            <div>
-                title
-                <input
-                    type="text"
-                    value={title}
-                    name="Title"
-                    onChange={(event) => setTitle(event.target.value)}
-                />
-            </div>
-            <div>
-                author
-                <input
-                    type="text"
-                    value={author}
-                    name="Author"
-                    onChange={(event) => setAuthor(event.target.value)}
-                />
-            </div>
-            <div>
-                url
-                <input
-                    type="text"
-                    value={url}
-                    name="Url"
-                    onChange={(event) => setUrl(event.target.value)}
-                />
-            </div>
-            <button type="submit">create</button>
-        </form>
-    );
-};
 
 const BlogView = forwardRef(({ blogs, user, handleLogout, handleCreateNewBlog, updateBlog, removeBlog }, ref) => {
     return (
