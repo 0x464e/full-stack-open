@@ -16,14 +16,15 @@ const Blog = ({ blog, updateBlog, removeBlog }) => {
     const handleRemove = async () => await removeBlog(blog);
 
     return (
-        <div style={blogStyle}>
-            {blog.title} {blog.author} <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
+        <div className="blog" style={blogStyle}>
+            {blog.title} {blog.author}<button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
             {visible &&
                 <div>
                     {blog.url}<br/>
                     {blog.likes} likes <button onClick={handleLike}>like</button><br/>
                     {blog.user.name}<br/>
-                    <button onClick={handleRemove}>remove</button>
+                    {JSON.parse(window.localStorage.getItem('loggedInUser')).username === blog.user.username &&
+                        <button onClick={handleRemove}>remove</button>}
                 </div>}
         </div>
     );

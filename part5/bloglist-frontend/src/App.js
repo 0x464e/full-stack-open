@@ -13,7 +13,7 @@ const App = () => {
     const blogViewRef = useRef();
 
     useEffect(() => {
-        blogService.getAll().then(blogs => setBlogs(blogs));
+        blogService.getAll().then(blogs => setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
         const loggedInUser = window.localStorage.getItem('loggedInUser');
         if (loggedInUser) {
             const user = JSON.parse(loggedInUser);
