@@ -115,7 +115,10 @@ const resolvers = {
 
     },
     Author: {
-        // bookCount: (root) => books.filter(book => book.author === root.name).length,
+        bookCount: async (root) => {
+            const books = await Book.find({author: root._id})
+            return books.length
+        }
     },
     Mutation: {
         addBook: async (root, args, context) => {

@@ -1,26 +1,46 @@
-import { useState } from "react";
+import {useState} from "react";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
+import LoginForm from "./components/LoginForm.jsx";
+import {useApolloClient} from "@apollo/client";
+import Recommended from "./components/Recommended.jsx";
 
 const App = () => {
-  const [page, setPage] = useState("authors");
+    const [page, setPage] = useState("authors");
+    const [token, setToken] = useState(null);
+    const client = useApolloClient();
 
-  return (
-    <div>
-      <div>
-        <button onClick={() => setPage("authors")}>authors</button>
-        <button onClick={() => setPage("books")}>books</button>
-        <button onClick={() => setPage("add")}>add book</button>
-      </div>
+    const logout = () => {
+        setPage("authors");
+        setToken(null);
+        localStorage.removeItem("library-user-token");
+        client.resetStore();
+    }
 
-      <Authors show={page === "authors"} />
+    return (
+        <div>
+            <div>
+                <button onClick={() => setPage("authors")}>authors</button>
+                <button onClick={() => setPage("books")}>books</button>
+                {token ? <button onClick={() => setPage("add")}>add book</button> :
+                    <button onClick={() => setPage("login")}>login</button>}
+                {token && <button onClick={() => setPage("recommendations")}>recommendations</button>}
+                {token && <button onClick={logout}>logout</button>}
 
-      <Books show={page === "books"} />
+            </div>
 
-      <NewBook show={page === "add"} />
-    </div>
-  );
+            <Authors show={page === "authors"}/>
+
+            <Books show={page === "books"}/>
+
+            <NewBook show={page === "add"}/>
+
+            <Recommended show={page === "recommendations"}/>
+
+            <LoginForm show={page === "login"} setToken={setToken} setPage={setPage}/>
+        </div>
+    );
 };
 
 export default App;
