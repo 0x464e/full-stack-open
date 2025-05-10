@@ -7,8 +7,13 @@ import {
     ApolloProvider,
     createHttpLink,
     InMemoryCache,
+    split
 } from '@apollo/client'
 import {setContext} from "@apollo/client/link/context";
+
+import {getMainDefinition} from '@apollo/client/utilities'
+import {GraphQLWsLink} from '@apollo/client/link/subscriptions'
+import {createClient} from 'graphql-ws'
 
 
 const authLink = setContext((_, {headers}) => {
@@ -24,9 +29,21 @@ const authLink = setContext((_, {headers}) => {
 const client = new ApolloClient({
     uri: 'http://localhost:4000',
     cache: new InMemoryCache(),
-    link: authLink.concat(createHttpLink({
-        uri: 'http://localhost:4000',
-    }))
+    link: split(
+        ({query}) => {
+            const definition = getMainDefinition(query)
+            return (
+                definition.kind === 'OperationDefinition' &&
+                definition.operation === 'subscription'
+            )
+        },
+        new GraphQLWsLink(
+            createClient({url: 'ws://localhost:4000'})
+        ),
+        authLink.concat(createHttpLink({
+            uri: 'http://localhost:4000',
+        }))
+    )
 })
 
 
